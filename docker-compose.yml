@@ -25,7 +25,10 @@ services:
   # FastAPI
   # ----------------------------------------------------------------------
   api:
-    build: .
+    # En el server NO se construye la imagen (no hay DNS para pip).
+    # Se baja ya construida desde ghcr.io, publicada por GitHub Actions.
+    # 'docker compose pull' la actualiza; 'up -d' la levanta.
+    image: ghcr.io/federicoquinones/typical-users-api:latest
     container_name: homelab-api
     restart: unless-stopped
     environment:
