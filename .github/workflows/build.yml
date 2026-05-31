@@ -43,8 +43,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
-          tags: |
+          push: true 
+          tags: | 
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
           # Cache para que builds futuros sean mas rapidos.
