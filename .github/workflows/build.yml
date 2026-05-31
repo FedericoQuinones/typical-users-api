@@ -32,11 +32,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 3. Prepara Buildx (el constructor moderno de imagenes de Docker).
+      # 3. ghcr.io EXIGE que el nombre este todo en minusculas, pero tu
+      #    usuario (FedericoQuinones) tiene mayusculas. Aca convertimos
+      #    "owner/repo" a minusculas y lo guardamos en la variable IMAGE.
+      - name: Calcular nombre de imagen en minusculas
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      # 4. Prepara Buildx (el constructor moderno de imagenes de Docker).
       - name: Preparar Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 4. Construye la imagen y la empuja a ghcr.io con dos etiquetas:
+      # 5. Construye la imagen y la empuja a ghcr.io con dos etiquetas:
       #    :latest  -> siempre la ultima
       #    :<sha>   -> el commit exacto (util para volver atras)
       - name: Build y push
@@ -44,9 +50,9 @@ jobs:
         with:
           context: .
           push: true 
-          tags: | 
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
           # Cache para que builds futuros sean mas rapidos.
           cache-from: type=gha
           cache-to: type=gha,mode=max
